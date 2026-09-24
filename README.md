@@ -206,10 +206,6 @@ Screenshots of Login, Today's Workout, and Active Workout still need to be captu
 
 ![HoopRoutine Today's Workout page](docs/screenshots/Today_Page.png)
 
-### Active Workout
-
-![HoopRoutine active workout page](docs/screenshots/Workout_Page.png)
-
 ### Workout History — Week 2 placeholder
 
 ![Workout History placeholder](docs/screenshots/History_Page.png)
