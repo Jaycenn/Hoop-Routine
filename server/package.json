@@ -1,0 +1,26 @@
+{
+  "name": "hoop-routine-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env --watch server.js",
+    "check": "node --check server.js && node --check routes/auth.js && node --check routes/workouts.js && node --check routes/sessions.js",
+    "test": "node --test",
+    "db:schema": "node --env-file=.env db/run.js db/schema.sql",
+    "db:seed": "node --env-file=.env db/run.js db/seed.sql",
+    "db:reset": "node --env-file=.env db/run.js db/reset.sql db/schema.sql db/seed.sql"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
+  }
+}
