@@ -205,8 +205,4 @@ npm run build
 
 ![HoopRoutine Today's Workout page](docs/screenshots/Today_Page.png)
 
-### Active Workout
-
-![HoopRoutine active workout page](docs/screenshots/Workout_Page.png)
-
 Updated screenshots of Workout Summary, Workout History, and Progress will be added after the Week 2 Neon test run. The existing History and Progress image files are retained as Week 1 evidence and are not presented here as current functionality.
