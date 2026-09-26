@@ -1,7 +1,5 @@
 # HoopRoutine — Week 2 Project Increment Report
 
-## Week of: September 24–27, 2026
-
 ## What changed this week
 
 - Replaced the Week 1 Workout Summary placeholder with a working summary screen that loads the completed session from the API.
