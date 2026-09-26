@@ -1,8 +1,8 @@
 # HoopRoutine
 
-HoopRoutine is a responsive basketball training app for players who want a prepared daily routine and a simple way to record their work. This Week 1 version supports accounts, today's workout, an active workout, and saved drill results.
+HoopRoutine is a responsive basketball training app for players who want a prepared daily routine and a simple way to record and review their work. This Week 2 version supports accounts, today's workout, active workout recording, workout summaries, history, and progress statistics.
 
-## Week 1 status
+## Week 2 status
 
 ### Working now
 
@@ -10,18 +10,24 @@ HoopRoutine is a responsive basketball training app for players who want a prepa
 - Keep workout data connected to the authenticated player.
 - View a prepared daily workout and its ordered drills.
 - Start or resume an unfinished workout.
+- Cancel an unfinished workout and remove its saved draft results after confirmation.
 - Record makes, attempts, repetitions, time, completed status, and notes.
 - Finish a workout and save it to PostgreSQL.
+- Review a completed session with shooting accuracy and workout totals.
+- Browse completed and unfinished sessions in Workout History.
+- Resume an unfinished workout from History.
+- View accumulated workouts, training time, completed drills, accuracy trends, and category results in Progress.
 - Use the working screens on phone, tablet, and desktop.
 
-### Planned next
+### Remaining before the final
 
-- Workout Summary
-- Workout History
-- Progress totals and accuracy trends
-- More complete validation, route tests, screenshots, deployment, and final visual polish
+- Route and database integration tests
+- Updated Week 2 screenshots
+- Accessibility and physical-device testing
+- Deployment and production configuration
+- Final loading, error-state, and visual polish
 
-The three planned screens are included as honest placeholders so the navigation matches the approved five-screen plan without presenting unfinished features as complete.
+Summary, History, and Progress now use the authenticated player's saved PostgreSQL data. The remaining work is testing, documentation, deployment, and final quality—not placeholder implementation.
 
 ## Technology
 
@@ -36,7 +42,8 @@ The three planned screens are included as honest placeholders so the navigation 
 
 - Node.js 20 or newer
 - npm
-- PostgreSQL 15 or newer, or Docker Desktop
+- A free hosted PostgreSQL database, such as Neon
+- An internet connection
 - Git
 
 ### 1. Get the code
@@ -46,16 +53,9 @@ git clone https://github.com/Jaycenn/Hoop-Routine.git
 cd Hoop-Routine
 ```
 
-### 2. Start PostgreSQL
+### 2. Create the PostgreSQL database
 
-Copy the root environment example and replace the placeholder password.
-
-```powershell
-Copy-Item .env.example .env
-docker compose up -d db
-```
-
-You can also use an existing PostgreSQL installation. Create a database named `hooproutine` and put its connection URL in `server/.env`.
+Create a PostgreSQL project in Neon and select a nearby region. From the Neon dashboard, open **Connect**, keep connection pooling enabled, and copy the complete connection string. Keep this value private and never paste it into a public file or commit it to GitHub.
 
 ### 3. Configure the server
 
@@ -68,12 +68,12 @@ Copy-Item .env.example .env
 Update `server/.env`:
 
 ```env
-PORT=3001
-DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/hooproutine
+PORT=3005
+DATABASE_URL="PASTE_YOUR_PRIVATE_NEON_CONNECTION_STRING_HERE"
 JWT_SECRET=replace-this-with-at-least-32-random-characters
-CORS_ORIGINS=http://localhost:5173
+CORS_ORIGINS=http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174
 COOKIE_SAME_SITE=lax
-DATABASE_SSL=false
+DATABASE_SSL=true
 ```
 
 Create the tables and starter workout:
@@ -98,7 +98,7 @@ Copy-Item .env.example .env
 The default client configuration is:
 
 ```env
-VITE_API_URL=http://localhost:3001/api
+VITE_API_URL=http://localhost:3005/api
 ```
 
 ## How to run it
@@ -115,7 +115,7 @@ Start React from `client/` in a second terminal:
 npm run dev
 ```
 
-Open `http://localhost:5173`. Create an account, open Today's Workout, and start recording drill results.
+Open the `Local:` URL printed by Vite, normally `http://localhost:5173` or `http://localhost:5174`. Create an account, open Today's Workout, and start recording drill results.
 
 ## Current usage flow
 
@@ -123,10 +123,11 @@ Open `http://localhost:5173`. Create an account, open Today's Workout, and start
 2. Review the workout on **Today**.
 3. Select **Start workout**.
 4. Enter the active drill's result and select **Save and continue**.
-5. After the last drill, select **Finish workout**.
-6. Return to Today with confirmation that the session was saved.
-
-History, Progress, and the detailed Workout Summary are planned for the next increment.
+5. If needed, select **Cancel workout** and confirm to delete the unfinished session.
+6. After the last drill, select **Finish workout**.
+7. Review the completed session on **Workout Summary**.
+8. Open **History** to revisit completed sessions or resume an unfinished one.
+9. Open **Progress** to review totals, recent accuracy, and category results.
 
 ## Current API endpoints
 
@@ -139,9 +140,12 @@ History, Progress, and the detailed Workout Summary are planned for the next inc
 | `POST` | `/api/auth/logout` | Clear the authentication cookie |
 | `GET` | `/api/workouts/today` | Return today's workout and ordered drills |
 | `POST` | `/api/sessions` | Start or resume a workout session |
+| `GET` | `/api/sessions` | Return the authenticated player's recent sessions |
 | `GET` | `/api/sessions/:sessionId` | Return one owned session and its drill results |
+| `DELETE` | `/api/sessions/:sessionId` | Cancel and delete one owned unfinished session |
 | `PATCH` | `/api/sessions/:sessionId/drills/:drillId` | Save one drill result |
 | `POST` | `/api/sessions/:sessionId/complete` | Complete an owned workout session |
+| `GET` | `/api/progress` | Return totals, recent accuracy, and category results |
 
 ## Project structure
 
@@ -151,7 +155,7 @@ Hoop-Routine/
 │   └── src/
 │       ├── components/    reusable interface pieces
 │       ├── context/       authentication state
-│       ├── pages/         account, workout, and planned screens
+│       ├── pages/         account, workout, summary, history, and progress screens
 │       ├── api.js         API request helper
 │       └── styles.css     shared and responsive styles
 ├── server/
@@ -159,11 +163,11 @@ Hoop-Routine/
 │   ├── lib/               authentication and validation helpers
 │   ├── routes/            current REST API routes
 │   └── test/              starter unit tests
-├── REPORT.md              Week 1 increment report
+├── REPORT.md              current weekly increment report
 └── WEEK-PLAN.md           planned development increments
 ```
 
-## Validation and security completed in Week 1
+## Validation and security
 
 - Passwords are hashed with bcrypt.
 - Authentication uses an HTTP-only cookie.
@@ -184,14 +188,9 @@ cd ../client
 npm run build
 ```
 
-## Screenshots
-
-Screenshots of Login, Today's Workout, and Active Workout still need to be captured from the app running with PostgreSQL and added under `docs/screenshots/`.
-
 ## Known issues and next steps
 
-- Summary, History, and Progress are placeholders in this increment.
-- PostgreSQL setup still needs to be tested on the final development computer.
+- Week 2 Summary, History, and Progress still need realistic multi-session testing against Neon.
 - Route and database integration tests have not been added yet.
 - The project still needs final loading, error, responsive, and accessibility testing.
 - The app is not deployed yet.
@@ -206,10 +205,8 @@ Screenshots of Login, Today's Workout, and Active Workout still need to be captu
 
 ![HoopRoutine Today's Workout page](docs/screenshots/Today_Page.png)
 
-### Workout History — Week 2 placeholder
+### Active Workout
 
-![Workout History placeholder](docs/screenshots/History_Page.png)
+![HoopRoutine active workout page](docs/screenshots/Workout_Page.png)
 
-### Progress — Week 2 placeholder
-
-![Progress placeholder](docs/screenshots/Progress_Page.png)
+Updated screenshots of Workout Summary, Workout History, and Progress will be added after the Week 2 Neon test run. The existing History and Progress image files are retained as Week 1 evidence and are not presented here as current functionality.

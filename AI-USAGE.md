@@ -1,61 +1,55 @@
-# AI Usage Log — Week 1
+# AI Usage Log
 
-I turned to Codex for assistance every time I had some difficulties with my code or wanted an alternative perspective on it. Codex was my debugger for errors and for correcting my code. Codex also helped me to have a wider idea for this project.
+I continued using Codex in Week 2 whenever I had difficulty with my code or wanted another perspective on solving a problem. I mainly asked it to help me understand errors, debug issues, and correct parts of my code. Codex also gave me suggestions for improving the new Summary, History, Progress, and Cancel Workout features.
 
-## Entry 1 — Project setup
-
-I asked Codex to help me check if I organized my React, Express, and PostgreSQL project correctly.
-
-I created the client and server folders, planned the project structure, and decided what I would finish during Week 1. Codex helped me check the setup and correct some environment-variable instructions. I kept the separate client and server structure.
+## Entry 1 — Local setup and Neon connection
 
 - Tool: Codex
-- Commit: Add the matching GitHub commit link here.
+- My request: Help me understand why Docker would not run and connect my existing project to hosted PostgreSQL instead.
+- My work: I developed the React, Express, and PostgreSQL project structure and chose Neon as the database service.
+- What I kept or changed: I kept my client/server structure and replaced the local Docker database plan with my Neon connection. Codex helped me correct the environment-variable setup.
+- Commit: Pending — no commit created yet.
 
-## Entry 2 — PostgreSQL and Neon
-
-I asked Codex to help me understand why Docker was not working and how I could use PostgreSQL without it.
-
-I decided to use Neon as my hosted PostgreSQL database. I created the Neon project, added the connection information to my environment file, and ran the database schema and seed commands. Codex helped me understand the Docker virtualization error and correct my database configuration.
-
-- Tool: Codex
-- Commit: Add the matching GitHub commit link here.
-
-## Entry 3 — Login and account creation
-
-I asked Codex to help me find out why account creation kept showing `Failed to fetch`.
-
-I developed the account creation, login, logout, password storage, and user-specific data flow. Codex helped me check the API port, CORS origins, cookies, environment files, and health endpoint. I corrected the configuration and kept the combined Login/Create Account screen.
+## Entry 2 — Failed to fetch and CORS debugging
 
 - Tool: Codex
-- Commit: Add the matching GitHub commit link here.
+- My request: Help me diagnose the repeated `Failed to fetch` message while both the client and server were running.
+- My work: I ran the application, checked the API, and maintained the client and server environment files.
+- What I kept or changed: I corrected the API port and allowed client origins after reviewing Codex's debugging suggestions. I tested the client on ports 5173 and 5174 and the API on port 3005.
+- Commit: Pending — no commit created yet.
 
-## Entry 4 — Workout recording
-
-I asked Codex to help me review the Active Workout form and find problems with saving drill results.
-
-I developed Today’s Workout and Active Workout with the Makes, Attempts, Repetitions, Time, Completed, and Notes fields. Codex helped me check the validation and correct some result-saving problems. I made sure the values could not be negative, makes could not be higher than attempts, and notes had a length limit.
-
-- Tool: Codex
-- Commit: Add the matching GitHub commit link here.
-
-## Entry 5 — Client and server connection
-
-I asked Codex to help me understand why the application sometimes continued showing `Failed to fetch` even when I started both servers.
-
-I tested the application, checked the environment files, and compared the API address with the server port. Codex helped me identify mismatched ports and missing CORS origins. I corrected the setup so the API uses port 3005 and the client can run on port 5173 or 5174.
+## Entry 3 — Authentication review
 
 - Tool: Codex
-- Commit: Add the matching GitHub commit link here.
+- My request: Check my login and account-creation flow so each player's workout data stays connected to that person.
+- My work: I developed the authentication screens, routes, PostgreSQL user records, protected API flow, and user-specific data behavior.
+- What I kept or changed: I kept the combined Login/Create Account screen. Codex helped me review password validation, cookie settings, CORS, and error handling.
+- Commit: Pending — no commit created yet.
 
-## Entry 6 — Week 1 documentation
-
-I asked Codex to help me check my README and Week 1 Project Increment Report for unclear or missing information.
-
-I wrote the project overview, setup instructions, current features, usage steps, known issues, and remaining work. Codex helped me correct some wording and formatting. I made sure the documentation matched the actual Week 1 version and clearly explained that Summary, History, and Progress would be developed later.
+## Entry 4 — Workout recording corrections
 
 - Tool: Codex
-- Commit: Add the matching GitHub commit link here.
+- My request: Review the Active Workout flow and help correct result-saving or validation problems.
+- My work: I developed Today's Workout and Active Workout, including Makes, Attempts, Repetitions, Time, Completed, and Notes.
+- What I kept or changed: I kept my workout flow and field design. I used Codex's feedback to correct validation, make sure makes cannot exceed attempts, limit notes, and keep saved results attached to the correct session.
+- Commit: Pending — no commit created yet.
 
-## My responsibility
+## Entry 5 — Week 2 history and progress debugging
 
-I developed HoopRoutine and made the final decisions about its design, code, features, and weekly scope. I used Codex to help me debug errors, review code, suggest corrections, and improve some documentation. I checked and tested the suggestions before deciding whether to use them.
+- Tool: Codex
+- My request: Check the new Workout Summary, Workout History, and Progress calculations and help identify incorrect results.
+- My work: I designed and developed the Week 2 screens, API routes, session totals, history behavior, progress statistics, and responsive layouts.
+- What I kept or changed: I kept my selected statistics and navigation. Codex helped me check PostgreSQL aggregate queries, distinguish missing shooting data from a real 0% result, and verify that queries only return the authenticated user's sessions.
+- Commit: Pending — no commit created yet.
+
+## Entry 6 — Cancel workout and documentation corrections
+
+- Tool: Codex
+- My request: Help debug the Cancel Workout feature, stale error messages, and inconsistencies in the Week 2 documentation.
+- My work: I developed the cancellation flow, confirmation step, incomplete-session behavior, and the Week 2 project increment.
+- What I kept or changed: I kept cancellation limited to unfinished workouts and protected completed sessions. Codex helped me review the ownership check, correct stale `Failed to fetch` behavior, and improve the README and weekly report. I decided to leave preset and custom workout routines for Week 3.
+- Commit: Pending — no commit created yet.
+
+## Responsibility statement
+
+The project concept, design choices, feature decisions, implementation, testing decisions, and final submitted work are mine. Codex was used for debugging assistance, code review, suggested corrections, and documentation feedback. I remained responsible for understanding, testing, accepting, changing, or rejecting every suggestion.
