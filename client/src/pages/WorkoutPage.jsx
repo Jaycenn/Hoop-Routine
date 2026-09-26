@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api.js';
+import { Button } from '../components/Button.jsx';
 import { DrillListItem } from '../components/DrillListItem.jsx';
 import { DrillResultForm } from '../components/DrillResultForm.jsx';
 import { ErrorNotice } from '../components/ErrorNotice.jsx';
@@ -29,13 +30,14 @@ export function WorkoutPage() {
   const [result, setResult] = useState(emptyResult);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const navigate = useNavigate();
 
   const loadSession = useCallback(async () => {
     const data = await api(`/sessions/${sessionId}`);
     setSession(data.session);
     if (data.session.status === 'completed') {
-      navigate('/today?completed=1', { replace: true });
+      navigate(`/summary/${sessionId}`, { replace: true });
       return;
     }
     const nextIndex = data.session.drills.findIndex((drill) => !drill.result.completed);
@@ -61,6 +63,23 @@ export function WorkoutPage() {
     setActiveIndex(index);
   }
 
+  async function cancelWorkout() {
+    const confirmed = window.confirm(
+      'Cancel this workout? The session and any results already entered will be deleted.',
+    );
+    if (!confirmed) return;
+
+    setCancelling(true);
+    setError('');
+    try {
+      await api(`/sessions/${sessionId}`, { method: 'DELETE' });
+      navigate('/today', { replace: true });
+    } catch (requestError) {
+      setError(requestError.message);
+      setCancelling(false);
+    }
+  }
+
   async function saveResult(event) {
     event.preventDefault();
     setSaving(true);
@@ -74,7 +93,7 @@ export function WorkoutPage() {
       const isLast = activeIndex === session.drills.length - 1;
       if (isLast) {
         await api(`/sessions/${sessionId}/complete`, { method: 'POST' });
-        navigate('/today?completed=1');
+        navigate(`/summary/${sessionId}`);
         return;
       }
 
@@ -98,7 +117,17 @@ export function WorkoutPage() {
           <span className="eyebrow">Active workout</span>
           <h1>{session.title}</h1>
         </div>
-        <ProgressBar current={completedCount} total={session.drills.length} />
+        <div className="workout-header-actions">
+          <ProgressBar current={completedCount} total={session.drills.length} />
+          <Button
+            type="button"
+            variant="danger"
+            onClick={cancelWorkout}
+            disabled={saving || cancelling}
+          >
+            {cancelling ? 'Cancelling…' : 'Cancel workout'}
+          </Button>
+        </div>
       </header>
 
       <div className="active-layout">
@@ -121,7 +150,7 @@ export function WorkoutPage() {
             value={result}
             onChange={setResult}
             onSubmit={saveResult}
-            saving={saving}
+            saving={saving || cancelling}
             error={error}
             isLast={activeIndex === session.drills.length - 1}
           />

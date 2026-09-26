@@ -119,10 +119,61 @@ sessionsRouter.post('/', asyncHandler(async (req, res) => {
   return res.status(201).json({ sessionId: Number(result.rows[0].id), resumed: false });
 }));
 
+sessionsRouter.get('/', asyncHandler(async (req, res) => {
+  const result = await pool.query(
+    `SELECT s.id, s.started_at, s.completed_at, s.total_seconds, s.status,
+            w.title, w.focus,
+            COUNT(r.id)::int AS recorded_drills,
+            COUNT(r.id) FILTER (WHERE r.completed)::int AS completed_drills,
+            COALESCE(SUM(r.makes), 0)::int AS makes,
+            COALESCE(SUM(r.attempts), 0)::int AS attempts
+     FROM workout_sessions s
+     JOIN workouts w ON w.id = s.workout_id
+     LEFT JOIN drill_results r ON r.session_id = s.id
+     WHERE s.user_id = $1
+     GROUP BY s.id, w.title, w.focus
+     ORDER BY s.started_at DESC
+     LIMIT 30`,
+    [req.user.id],
+  );
+
+  return res.json({
+    sessions: result.rows.map((row) => ({
+      id: Number(row.id),
+      title: row.title,
+      focus: row.focus,
+      status: row.status,
+      startedAt: row.started_at,
+      completedAt: row.completed_at,
+      totalSeconds: row.total_seconds,
+      recordedDrills: row.recorded_drills,
+      completedDrills: row.completed_drills,
+      makes: row.makes,
+      attempts: row.attempts,
+      accuracy: row.attempts > 0 ? Math.round((row.makes / row.attempts) * 100) : null,
+    })),
+  });
+}));
+
 sessionsRouter.get('/:sessionId', asyncHandler(async (req, res) => {
   const session = await sessionDetails(req.params.sessionId, req.user.id);
   if (!session) return res.status(404).json({ error: 'Workout session not found.' });
   return res.json({ session });
+}));
+
+sessionsRouter.delete('/:sessionId', asyncHandler(async (req, res) => {
+  const session = await ownedSession(req.params.sessionId, req.user.id);
+  if (!session) return res.status(404).json({ error: 'Workout session not found.' });
+  if (session.status === 'completed') {
+    return res.status(409).json({ error: 'Completed workouts cannot be cancelled.' });
+  }
+
+  await pool.query(
+    `DELETE FROM workout_sessions
+     WHERE id = $1 AND user_id = $2 AND status = 'in_progress'`,
+    [session.id, req.user.id],
+  );
+  return res.status(204).send();
 }));
 
 sessionsRouter.patch('/:sessionId/drills/:drillId', asyncHandler(async (req, res) => {

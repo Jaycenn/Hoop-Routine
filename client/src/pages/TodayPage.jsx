@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { Button } from '../components/Button.jsx';
 import { DrillListItem } from '../components/DrillListItem.jsx';
@@ -13,12 +13,22 @@ export function TodayPage() {
   const [error, setError] = useState('');
   const [starting, setStarting] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    let active = true;
+    setError('');
     api('/workouts/today')
-      .then((data) => setWorkout(data.workout))
-      .catch((requestError) => setError(requestError.message));
+      .then((data) => {
+        if (!active) return;
+        setWorkout(data.workout);
+        setError('');
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.message);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function startWorkout() {
@@ -46,11 +56,6 @@ export function TodayPage() {
         <p>Your session is planned. All that is left is to start.</p>
       </header>
 
-      {searchParams.get('completed') === '1' && (
-        <div className="success-notice" role="status">
-          Workout saved. A detailed summary will be added in the next development increment.
-        </div>
-      )}
       <ErrorNotice message={error} />
       {workout && (
         <div className="today-grid">

@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import { pool } from './db/pool.js';
 import { authRouter } from './routes/auth.js';
+import { progressRouter } from './routes/progress.js';
 import { sessionsRouter } from './routes/sessions.js';
 import { workoutsRouter } from './routes/workouts.js';
 
@@ -36,6 +37,7 @@ app.get('/api/health', async (_req, res, next) => {
 app.use('/api/auth', authRouter);
 app.use('/api/workouts', workoutsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/progress', progressRouter);
 
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'API route not found.' });

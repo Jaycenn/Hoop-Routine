@@ -257,6 +257,16 @@ p {
   background: var(--orange-dark);
 }
 
+.button--danger {
+  border: 1px solid #c83f1a;
+  background: transparent;
+  color: #9f2f11;
+}
+
+.button--danger:hover:not(:disabled) {
+  background: #fff2ed;
+}
+
 .error-notice {
   margin: 18px 0;
   padding: 14px 16px;
@@ -265,34 +275,6 @@ p {
   background: #fff2ed;
   color: #85270c;
   line-height: 1.45;
-}
-
-.success-notice {
-  margin: -40px 0 36px;
-  padding: 14px 16px;
-  border: 1px solid #9bc6a5;
-  border-radius: 12px;
-  background: #f0faf2;
-  color: #235c31;
-  line-height: 1.45;
-}
-
-.planned-panel {
-  max-width: 760px;
-  padding: clamp(32px, 6vw, 64px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
-}
-
-.planned-panel h1 {
-  margin-bottom: 24px;
-}
-
-.planned-panel p {
-  max-width: 580px;
-  margin-bottom: 32px;
-  font-size: 1.05rem;
 }
 
 .loading-screen {
@@ -584,7 +566,9 @@ p {
   color: var(--ink);
 }
 
-.drill-panel {
+.drill-panel,
+.summary-content,
+.progress-panel {
   padding: clamp(24px, 4vw, 40px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -685,6 +669,17 @@ p {
 .workout-header h1 {
   margin-bottom: 0;
   font-size: clamp(2.4rem, 5vw, 4.8rem);
+}
+
+.workout-header-actions {
+  display: grid;
+  justify-items: stretch;
+  gap: 14px;
+}
+
+.workout-header-actions .button {
+  justify-self: end;
+  padding: 10px 16px;
 }
 
 .progress-wrap {
@@ -802,16 +797,293 @@ p {
   color: var(--muted);
 }
 
+/* Summary */
+.summary-page {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.78fr) minmax(520px, 1.22fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: start;
+}
+
+.summary-hero {
+  position: sticky;
+  top: 110px;
+  min-height: 600px;
+  padding: clamp(32px, 5vw, 58px);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+}
+
+.summary-hero h1 {
+  margin: 40px 0 22px;
+  font-size: clamp(3rem, 6vw, 6rem);
+  text-transform: uppercase;
+}
+
+.summary-hero > p {
+  color: #aaa;
+}
+
+.summary-score {
+  position: absolute;
+  right: clamp(32px, 5vw, 58px);
+  bottom: clamp(32px, 5vw, 58px);
+  left: clamp(32px, 5vw, 58px);
+  display: grid;
+  border-top: 1px solid #444;
+  padding-top: 25px;
+}
+
+.summary-score strong {
+  color: var(--orange);
+  font-size: clamp(4rem, 10vw, 8rem);
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+}
+
+.summary-score span {
+  margin-top: 12px;
+  color: #bbb;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  display: grid;
+  min-height: 150px;
+  align-content: space-between;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.stat-card > span,
+.stat-card small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -0.06em;
+}
+
+.result-list {
+  display: grid;
+  gap: 0;
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+}
+
+.result-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.result-row p {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+}
+
+.result-values {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.result-values span {
+  display: grid;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.result-values strong {
+  color: var(--ink);
+  font-size: 1.2rem;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 34px;
+}
+
+/* History and progress */
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 22px;
+  padding: 25px 28px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--paper);
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+  border-color: #aaa;
+}
+
+.history-item--open {
+  border-color: #f2b098;
+  background: #fff7f3;
+}
+
+.history-item p {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+}
+
+.history-score {
+  display: grid;
+  text-align: right;
+}
+
+.history-score strong {
+  font-size: 1.8rem;
+}
+
+.history-score span {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.empty-state {
+  display: grid;
+  min-height: 330px;
+  place-content: center;
+  padding: 40px;
+  border: 1px dashed #bbb;
+  border-radius: var(--radius);
+  background: var(--paper);
+  text-align: center;
+}
+
+.empty-state p {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.progress-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+.progress-panel + .progress-panel {
+  margin-top: 24px;
+}
+
+.accuracy-chart {
+  display: flex;
+  min-height: 270px;
+  align-items: flex-end;
+  gap: clamp(10px, 3vw, 28px);
+  padding-top: 30px;
+}
+
+.chart-column {
+  display: grid;
+  flex: 1;
+  justify-items: center;
+  gap: 8px;
+}
+
+.chart-value,
+.chart-label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.chart-track {
+  position: relative;
+  width: min(100%, 48px);
+  height: 190px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.chart-track span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 999px;
+  background: var(--orange);
+}
+
+.accuracy-rows {
+  display: grid;
+}
+
+.accuracy-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.accuracy-row:last-child {
+  border-bottom: 0;
+}
+
+.accuracy-row > div {
+  display: grid;
+  gap: 5px;
+}
+
+.accuracy-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.accuracy-row > strong {
+  font-size: 1.5rem;
+}
+
 @media (max-width: 1023px) {
   .account-name {
     display: none;
   }
 
-  .today-grid {
+  .today-grid,
+  .summary-page {
     grid-template-columns: 1fr;
   }
 
-  .workout-hero {
+  .workout-hero,
+  .summary-hero {
     position: relative;
     top: auto;
     min-height: 540px;
@@ -833,6 +1105,9 @@ p {
     scroll-snap-align: start;
   }
 
+  .progress-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -927,11 +1202,14 @@ p {
     font-size: 3.15rem;
   }
 
-  .workout-hero {
+  .workout-hero,
+  .summary-hero {
     min-height: 530px;
   }
 
-  .drill-panel {
+  .drill-panel,
+  .summary-content,
+  .progress-panel {
     padding: 22px 16px;
   }
 
@@ -939,6 +1217,10 @@ p {
     grid-template-columns: 1fr;
     gap: 25px;
     margin-bottom: 30px;
+  }
+
+  .workout-header-actions .button {
+    justify-self: start;
   }
 
   .workout-sidebar {
@@ -976,8 +1258,43 @@ p {
     padding: 28px 20px;
   }
 
-  .result-grid {
+  .result-grid,
+  .stats-grid,
+  .progress-stats {
     grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    min-height: 125px;
+  }
+
+  .result-row {
+    grid-template-columns: 1fr;
+  }
+
+  .result-values {
+    justify-content: flex-start;
+  }
+
+  .result-values span {
+    text-align: left;
+  }
+
+  .history-item {
+    padding: 21px 18px;
+  }
+
+  .action-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .accuracy-chart {
+    gap: 8px;
+  }
+
+  .chart-track {
+    height: 150px;
   }
 }
 

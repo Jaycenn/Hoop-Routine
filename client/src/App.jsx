@@ -3,7 +3,9 @@ import { AppHeader } from './components/AppHeader.jsx';
 import { LoadingScreen } from './components/LoadingScreen.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 import { AuthPage } from './pages/AuthPage.jsx';
-import { PlannedPage } from './pages/PlannedPage.jsx';
+import { HistoryPage } from './pages/HistoryPage.jsx';
+import { ProgressPage } from './pages/ProgressPage.jsx';
+import { SummaryPage } from './pages/SummaryPage.jsx';
 import { TodayPage } from './pages/TodayPage.jsx';
 import { WorkoutPage } from './pages/WorkoutPage.jsx';
 
@@ -35,18 +37,9 @@ export function App() {
           <Route index element={<Navigate to="/today" replace />} />
           <Route path="/today" element={<TodayPage />} />
           <Route path="/workout/:sessionId" element={<WorkoutPage />} />
-          <Route
-            path="/summary/:sessionId"
-            element={<PlannedPage title="Workout Summary" description="A detailed result breakdown is planned for the next development increment." />}
-          />
-          <Route
-            path="/history"
-            element={<PlannedPage title="Workout History" description="Saved-session browsing is planned for the next development increment." />}
-          />
-          <Route
-            path="/progress"
-            element={<PlannedPage title="Progress" description="Training totals and accuracy trends are planned for the next development increment." />}
-          />
+          <Route path="/summary/:sessionId" element={<SummaryPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/progress" element={<ProgressPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
