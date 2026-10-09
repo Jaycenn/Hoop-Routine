@@ -6,9 +6,11 @@ import { LoadingScreen } from '../components/LoadingScreen.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export function AuthPage() {
-  const { user, loading, login, register } = useAuth();
+  const { user, loading, login, register, error: connectionError, retry } = useAuth();
   const [mode, setMode] = useState('login');
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    name: '', email: '', password: '', confirmPassword: '',
+  });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -23,8 +25,13 @@ export function AuthPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setSubmitting(true);
     setError('');
+    if (mode === 'register' && form.password !== form.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setSubmitting(true);
     try {
       if (mode === 'register') await register(form);
       else await login({ email: form.email, password: form.password });
@@ -61,28 +68,46 @@ export function AuthPage() {
               : 'Create an account to keep your results in one place.'}
           </p>
 
-          <div className="auth-tabs" role="tablist" aria-label="Account action">
-            <button type="button" role="tab" aria-selected={mode === 'login'} onClick={() => setMode('login')}>Log in</button>
-            <button type="button" role="tab" aria-selected={mode === 'register'} onClick={() => setMode('register')}>Create account</button>
+          <div className="auth-tabs" role="group" aria-label="Account action">
+            <button type="button" disabled={submitting} aria-pressed={mode === 'login'} onClick={() => setMode('login')}>Log in</button>
+            <button type="button" disabled={submitting} aria-pressed={mode === 'register'} onClick={() => setMode('register')}>Create account</button>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
             {mode === 'register' && (
               <label className="field">
                 <span className="field-label">Name</span>
-                <input value={form.name} onChange={(event) => update('name', event.target.value)} autoComplete="name" required minLength="2" />
+                <input value={form.name} onChange={(event) => update('name', event.target.value)} autoComplete="name" required minLength="2" maxLength="80" />
               </label>
             )}
             <label className="field">
               <span className="field-label">Email</span>
-              <input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} autoComplete="email" required />
+              <input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} autoComplete="email" required maxLength="255" />
             </label>
             <label className="field">
               <span className="field-label">Password</span>
               <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required minLength="8" />
               {mode === 'register' && <span className="field-hint">At least 8 characters</span>}
             </label>
-            <ErrorNotice message={error} />
+            {mode === 'register' && (
+              <label className="field">
+                <span className="field-label">Confirm password</span>
+                <input
+                  type="password"
+                  value={form.confirmPassword}
+                  onChange={(event) => update('confirmPassword', event.target.value)}
+                  autoComplete="new-password"
+                  required
+                  minLength="8"
+                  aria-invalid={Boolean(form.confirmPassword && form.password !== form.confirmPassword)}
+                />
+                {form.confirmPassword && form.password !== form.confirmPassword && (
+                  <span className="field-hint field-hint--error">Passwords do not match</span>
+                )}
+              </label>
+            )}
+            <ErrorNotice message={error || connectionError} />
+            {connectionError && <Button type="button" onClick={retry}>Retry connection</Button>}
             <Button type="submit" disabled={submitting}>
               {submitting ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Create account'}
             </Button>

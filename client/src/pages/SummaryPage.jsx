@@ -1,19 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { api } from '../api.js';
-import { Button } from '../components/Button.jsx';
+import { shootingTotals } from '../drafts.js';
 import { ErrorNotice } from '../components/ErrorNotice.jsx';
 import { LoadingScreen } from '../components/LoadingScreen.jsx';
 import { StatCard } from '../components/StatCard.jsx';
+import { Button } from '../components/Button.jsx';
+import { formatWorkoutDuration, formatWorkoutTime } from '../time.js';
 
 export function SummaryPage() {
   const { sessionId } = useParams();
   const [session, setSession] = useState(null);
   const [error, setError] = useState('');
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
     setError('');
+    setSession(null);
     api(`/sessions/${sessionId}`)
       .then((data) => {
         if (!active) return;
@@ -26,26 +30,21 @@ export function SummaryPage() {
     return () => {
       active = false;
     };
-  }, [sessionId]);
+  }, [sessionId, loadAttempt]);
 
   const stats = useMemo(() => {
     if (!session) return null;
-    const result = session.drills.reduce((total, drill) => ({
-      completed: total.completed + (drill.result.completed ? 1 : 0),
-      makes: total.makes + (drill.result.makes || 0),
-      attempts: total.attempts + (drill.result.attempts || 0),
-      repetitions: total.repetitions + (drill.result.repetitions || 0),
-    }), { completed: 0, makes: 0, attempts: 0, repetitions: 0 });
+    const result = shootingTotals(session.drills);
     return {
       ...result,
       accuracy: result.attempts > 0 ? Math.round((result.makes / result.attempts) * 100) : null,
-      minutes: Math.round((session.totalSeconds || 0) / 60),
     };
   }, [session]);
 
   if (!session && !error) return <LoadingScreen label="Building your summary" />;
-  if (!session) return <div className="page"><ErrorNotice message={error} /></div>;
+  if (!session) return <div className="page"><ErrorNotice message={error} /><Button onClick={() => setLoadAttempt((count) => count + 1)}>Retry loading summary</Button></div>;
 
+  if (session.status !== 'completed') return <Navigate to={'/workout/' + sessionId} replace />;
   return (
     <div className="page summary-page">
       <header className="summary-hero">
@@ -67,9 +66,11 @@ export function SummaryPage() {
         </div>
         <div className="stats-grid">
           <StatCard label="Drills completed" value={`${stats.completed}/${session.drills.length}`} />
-          <StatCard label="Time trained" value={`${stats.minutes} min`} />
+          <StatCard label="Started" value={formatWorkoutTime(session.startedAt)} />
+          <StatCard label="Finished" value={formatWorkoutTime(session.completedAt)} />
+          <StatCard label="Total workout time" value={formatWorkoutDuration(session.totalSeconds)} />
           <StatCard label="Shots made" value={stats.makes} detail={`${stats.attempts} attempts`} />
-          <StatCard label="Repetitions" value={stats.repetitions} />
+          <StatCard label="Rounds recorded" value={stats.repetitions} />
         </div>
 
         <div className="result-list">
@@ -82,15 +83,14 @@ export function SummaryPage() {
               </div>
               <div className="result-values">
                 {drill.result.attempts !== null && <span><strong>{drill.result.makes || 0}/{drill.result.attempts}</strong> shooting</span>}
-                {drill.result.repetitions !== null && <span><strong>{drill.result.repetitions}</strong> reps</span>}
-                {drill.result.timeSeconds !== null && <span><strong>{drill.result.timeSeconds}s</strong> time</span>}
+                {drill.result.repetitions !== null && <span><strong>{drill.result.repetitions}</strong> rounds</span>}
               </div>
             </article>
           ))}
         </div>
 
         <div className="action-row">
-          <Link to="/progress"><Button>View progress</Button></Link>
+          <Link to="/progress" className="button button--primary">View progress</Link>
           <Link to="/today" className="inline-link">Back to today</Link>
         </div>
       </section>

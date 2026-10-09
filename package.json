@@ -7,7 +7,10 @@
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix client run build",
-    "check": "npm --prefix server run check && npm --prefix client run build"
+    "check": "npm test && npm --prefix server run check && npm --prefix client run build",
+    "test": "npm --prefix server test && npm --prefix client test"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }
-

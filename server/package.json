@@ -4,16 +4,18 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "start": "node server.js",
     "dev": "node --env-file=.env --watch server.js",
-    "check": "node --check server.js && node --check routes/auth.js && node --check routes/workouts.js && node --check routes/sessions.js && node --check routes/progress.js",
+    "check": "node --check server.js && node --check app.js && node --check db/migrate.js && node --check db/run.js && node --check db/maintenance.js",
     "test": "node --test",
-    "db:schema": "node --env-file=.env db/run.js db/schema.sql",
+    "db:schema": "node --env-file=.env db/migrate.js --init",
     "db:seed": "node --env-file=.env db/run.js db/seed.sql",
-    "db:reset": "node --env-file=.env db/run.js db/reset.sql db/schema.sql db/seed.sql"
+    "db:reset": "node --env-file=.env db/migrate.js --reset --init --seed",
+    "db:migrate": "node --env-file=.env db/migrate.js",
+    "db:status": "node --env-file=.env db/migrate.js --status"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -22,5 +24,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
   }
 }

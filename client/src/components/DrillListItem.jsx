@@ -1,11 +1,4 @@
-function targetText(drill) {
-  const parts = [];
-  if (drill.targetMakes !== null && drill.targetMakes !== undefined) parts.push(`${drill.targetMakes} makes`);
-  if (drill.targetAttempts !== null && drill.targetAttempts !== undefined) parts.push(`${drill.targetAttempts} attempts`);
-  if (drill.targetRepetitions !== null && drill.targetRepetitions !== undefined) parts.push(`${drill.targetRepetitions} rounds`);
-  if (drill.targetSeconds) parts.push(`${Math.round(drill.targetSeconds / 60)} min`);
-  return parts.join(' · ');
-}
+import { targetText } from '../targets.js';
 
 export function DrillListItem({ drill, active = false, completed = false }) {
   return (
@@ -16,6 +9,7 @@ export function DrillListItem({ drill, active = false, completed = false }) {
       <div className="drill-copy">
         <span className="category-label">{drill.category}</span>
         <h3>{drill.name}</h3>
+        <span className="sr-only">{completed ? 'Completed. ' : 'Not completed. '}{active ? 'Current drill.' : ''}</span>
         <p>{targetText(drill)}</p>
       </div>
       <span className="drill-arrow" aria-hidden="true">→</span>

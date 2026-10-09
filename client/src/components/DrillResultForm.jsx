@@ -2,18 +2,20 @@ import { Button } from './Button.jsx';
 import { ErrorNotice } from './ErrorNotice.jsx';
 import { NumberInput } from './NumberInput.jsx';
 
-export function DrillResultForm({ value, onChange, onSubmit, saving, error, isLast }) {
+export function DrillResultForm({ value, onChange, onSubmit, saving, error, isLast, shooting = true }) {
   function set(field, nextValue) {
     onChange({ ...value, [field]: nextValue });
   }
 
   return (
     <form className="result-form" onSubmit={onSubmit}>
+      <fieldset className="result-fields" disabled={saving}>
       <div className="result-grid">
-        <NumberInput label="Makes" value={value.makes} onChange={(event) => set('makes', event.target.value)} placeholder="0" />
-        <NumberInput label="Attempts" value={value.attempts} onChange={(event) => set('attempts', event.target.value)} placeholder="0" />
-        <NumberInput label="Repetitions" value={value.repetitions} onChange={(event) => set('repetitions', event.target.value)} placeholder="0" />
-        <NumberInput label="Time (seconds)" value={value.timeSeconds} onChange={(event) => set('timeSeconds', event.target.value)} placeholder="0" />
+        {(shooting || value.makes !== '' || value.attempts !== '') && <>
+          <NumberInput label="Makes" value={value.makes} onChange={(event) => set('makes', event.target.value)} placeholder="0" />
+          <NumberInput label="Attempts" value={value.attempts} onChange={(event) => set('attempts', event.target.value)} placeholder="0" />
+        </>}
+        {(!shooting || value.repetitions !== '') && <NumberInput label="Rounds completed" value={value.repetitions} onChange={(event) => set('repetitions', event.target.value)} placeholder="0" />}
       </div>
 
       <label className="check-field">
@@ -24,7 +26,7 @@ export function DrillResultForm({ value, onChange, onSubmit, saving, error, isLa
         />
         <span>
           <strong>Completed</strong>
-          <small>Mark this drill complete before continuing.</small>
+          <small>Check when you finish. You can save a partial result and return later.</small>
         </span>
       </label>
 
@@ -41,9 +43,11 @@ export function DrillResultForm({ value, onChange, onSubmit, saving, error, isLa
       </label>
 
       <ErrorNotice message={error} />
+      {isLast && <Button type="submit" value="save-progress" variant="secondary" disabled={saving}>Save progress without finishing</Button>}
       <Button type="submit" disabled={saving}>
         {saving ? 'Saving…' : isLast ? 'Finish workout' : 'Save and continue'}
       </Button>
+      </fieldset>
     </form>
   );
 }

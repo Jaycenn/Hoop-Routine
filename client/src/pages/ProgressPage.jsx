@@ -5,10 +5,12 @@ import { EmptyState } from '../components/EmptyState.jsx';
 import { ErrorNotice } from '../components/ErrorNotice.jsx';
 import { LoadingScreen } from '../components/LoadingScreen.jsx';
 import { StatCard } from '../components/StatCard.jsx';
+import { Button } from '../components/Button.jsx';
 
 export function ProgressPage() {
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -25,10 +27,10 @@ export function ProgressPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [attempt]);
 
   if (!progress && !error) return <LoadingScreen label="Calculating your progress" />;
-  if (!progress) return <div className="page"><ErrorNotice message={error} /></div>;
+  if (!progress) return <div className="page"><ErrorNotice message={error} /><Button onClick={() => setAttempt((value) => value + 1)}>Retry progress</Button></div>;
 
   return (
     <div className="page narrow-page">
@@ -46,7 +48,7 @@ export function ProgressPage() {
         <>
           <section className="stats-grid progress-stats" aria-label="Progress overview">
             <StatCard label="Workouts" value={progress.totalWorkouts} />
-            <StatCard label="Training time" value={`${progress.totalMinutes} min`} />
+            <StatCard label="Elapsed session time" value={`${progress.totalMinutes} min`} detail="Includes breaks while a session is open" />
             <StatCard label="Completed drills" value={progress.completedDrills} />
             <StatCard label="Shooting accuracy" value={progress.accuracy === null ? '—' : `${progress.accuracy}%`} detail={`${progress.makes}/${progress.attempts} shots`} />
           </section>
