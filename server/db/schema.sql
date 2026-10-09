@@ -1,3 +1,5 @@
+-- Baseline schema. Use db:schema to initialize AND apply the ordered migrations.
+-- Existing databases use db:migrate after approval; neither command deletes user data.
 CREATE TABLE IF NOT EXISTS users (
   id BIGSERIAL PRIMARY KEY,
   display_name VARCHAR(80) NOT NULL,
@@ -15,15 +17,41 @@ CREATE TABLE IF NOT EXISTS workouts (
   description TEXT NOT NULL,
   estimated_minutes INTEGER NOT NULL CHECK (estimated_minutes BETWEEN 1 AND 300),
   difficulty VARCHAR(20) NOT NULL CHECK (difficulty IN ('Beginner', 'Intermediate', 'Advanced')),
+  training_type VARCHAR(20) NOT NULL DEFAULT 'on_court'
+    CHECK (training_type IN ('on_court', 'off_court', 'recovery', 'mixed')),
+  equipment TEXT NOT NULL DEFAULT '',
+  source VARCHAR(20) NOT NULL DEFAULT 'preset' CHECK (source IN ('preset', 'custom')),
+  owner_user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT workouts_owner_valid CHECK (
+    (source = 'preset' AND owner_user_id IS NULL)
+    OR (source = 'custom' AND owner_user_id IS NOT NULL)
+  )
 );
+
+ALTER TABLE workouts
+  ADD COLUMN IF NOT EXISTS source VARCHAR(20) NOT NULL DEFAULT 'preset'
+    CHECK (source IN ('preset', 'custom'));
+
+ALTER TABLE workouts
+  ADD COLUMN IF NOT EXISTS owner_user_id BIGINT REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE workouts
+  ADD COLUMN IF NOT EXISTS training_type VARCHAR(20) NOT NULL DEFAULT 'on_court'
+    CHECK (training_type IN ('on_court', 'off_court', 'recovery', 'mixed'));
+
+ALTER TABLE workouts
+  ADD COLUMN IF NOT EXISTS equipment TEXT NOT NULL DEFAULT '';
 
 CREATE TABLE IF NOT EXISTS drills (
   id BIGSERIAL PRIMARY KEY,
   slug VARCHAR(80) NOT NULL UNIQUE,
   name VARCHAR(120) NOT NULL,
   category VARCHAR(40) NOT NULL,
+  training_type VARCHAR(20) NOT NULL DEFAULT 'on_court'
+    CHECK (training_type IN ('on_court', 'off_court', 'recovery')),
+  equipment TEXT NOT NULL DEFAULT '',
   instructions TEXT NOT NULL,
   target_makes INTEGER CHECK (target_makes >= 0),
   target_attempts INTEGER CHECK (target_attempts >= 0),
@@ -34,6 +62,13 @@ CREATE TABLE IF NOT EXISTS drills (
     target_makes IS NULL OR target_attempts IS NULL OR target_makes <= target_attempts
   )
 );
+
+ALTER TABLE drills
+  ADD COLUMN IF NOT EXISTS training_type VARCHAR(20) NOT NULL DEFAULT 'on_court'
+    CHECK (training_type IN ('on_court', 'off_court', 'recovery'));
+
+ALTER TABLE drills
+  ADD COLUMN IF NOT EXISTS equipment TEXT NOT NULL DEFAULT '';
 
 CREATE TABLE IF NOT EXISTS workout_drills (
   workout_id BIGINT NOT NULL REFERENCES workouts(id) ON DELETE CASCADE,
@@ -79,4 +114,6 @@ CREATE TABLE IF NOT EXISTS drill_results (
 CREATE INDEX IF NOT EXISTS sessions_user_completed_idx
   ON workout_sessions(user_id, completed_at DESC);
 CREATE INDEX IF NOT EXISTS results_session_idx ON drill_results(session_id);
+CREATE INDEX IF NOT EXISTS workouts_owner_active_idx
+  ON workouts(owner_user_id, is_active, created_at DESC);
 

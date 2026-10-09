@@ -8,11 +8,14 @@ import { ProgressPage } from './pages/ProgressPage.jsx';
 import { SummaryPage } from './pages/SummaryPage.jsx';
 import { TodayPage } from './pages/TodayPage.jsx';
 import { WorkoutPage } from './pages/WorkoutPage.jsx';
+import { ErrorNotice } from './components/ErrorNotice.jsx';
+import { Button } from './components/Button.jsx';
 
 function ProtectedRoute() {
-  const { user, loading } = useAuth();
+  const { user, loading, error, retry } = useAuth();
   const location = useLocation();
   if (loading) return <LoadingScreen label="Preparing your workout" />;
+  if (error) return <div className="page"><ErrorNotice message={error} /><Button onClick={retry}>Retry connection</Button></div>;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   return <Outlet />;
 }
