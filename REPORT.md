@@ -43,8 +43,6 @@ The student originated HoopRoutine's concept, basketball training content, featu
 
 The following describes the earlier increment; its then-open tasks and behavior are not a statement of the current implementation.
 
-## Week of: September 24–27, 2026
-
 ## What changed this week
 
 - Replaced the Week 1 Workout Summary placeholder with a working summary screen that loads the completed session from the API.
