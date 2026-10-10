@@ -1,91 +1,57 @@
 # HoopRoutine — Project Increment Report
 
-## Week 3: October 5–9, 2026
+**Project:** [HoopRoutine — Basketball Training and Performance Tracker](README.md)
 
-This section records Week 3 work through October 9. Codex directly implemented part of the local code and documentation; see [AI-USAGE.md](AI-USAGE.md). The new source changes remain uncommitted. After an isolated rehearsal, the student ran Migration 001 on Neon and showed its status as `applied`. The seed script has not been run on live Neon. The earlier Week 2 report is retained below as historical context.
+**Development covered:** Weeks 1–3, through October 9, 2026
 
-### What changed this week
+**Live app:** [hooproutine.vercel.app](https://hooproutine.vercel.app/)
 
-- Prepared a versioned database migration for longer custom-workout metadata, unique active sessions, immutable session drill snapshots, login-session revocation, and stronger result constraints.
-- Wrapped saving, finishing, and cancelling sessions in transactions using the same owned-session row lock. Finishing the last drill and the workout can now happen atomically, and repeated completion keeps the original finish time.
-- Added retry keys to custom-workout creation/editing and draft recovery to the workout form and builder.
-- Tightened request validation, password byte limits, authentication rate limiting, startup environment validation, database TLS verification, and safe API error responses.
-- Corrected shooting totals when legacy makes have no attempts; added History pagination and clearer authentication/network retry states.
-- Expanded all 46 drill guides with equipment, explicit workloads, and recording instructions. Shared target formatting and clarified rounds in the interface.
-- Adjusted tablet/mobile layouts, accessible control states, progress labels, and disabled/busy behavior.
-- Added regression tests, an opt-in disposable PostgreSQL integration suite, complete setup instructions, the 31-row security checklist, and revised finals presentation/video outlines.
-- Created and checked a private pre-migration Neon backup, restored it into an isolated PostgreSQL database, and rehearsed Migration 001 there. The original table fingerprints stayed the same and eight historical drill snapshots were added. Local API checks covered login, custom-workout saving, result saving, completion, History, and Progress.
-- The student applied only Migration 001 to live Neon. Its reported status changed from `pending` to `applied`; a subsequent Neon count check showed the expected accounts, workouts, drills, assignments, sessions, results, and snapshots. No live seed or reset was run.
+HoopRoutine is my basketball training app for planning workouts, recording drill results, and reviewing progress. I developed the original idea, basketball routines, user flow, and much of the initial code foundation. I directed the later work and tested the results. OpenAI Codex substantially helped expand, revise, debug, and test the implementation, and directly wrote some later code. [AI-USAGE.md](AI-USAGE.md) explains that assistance; the exact student-written code share is still unverified.
 
-### Why
+## Progress across the three weeks
 
-The student originated HoopRoutine's concept, basketball training content, feature direction, and original foundation. Codex substantially assisted with implementation. The Week 3 audit found cases where a valid workout could fail to save, concurrent requests could conflict, or the interface could lose inputs or misrepresent results. The fixes keep the React, Express, PostgreSQL, and HoopRoutine design. The documentation follows the APSI finals requirements supplied on October 9.
+| Week | Main increment | Evidence |
+| --- | --- | --- |
+| **1 — foundation** | Built the initial React client, Express API, PostgreSQL schema, account flow, Today's Workout, and active workout recording. Summary, History, and Progress were still placeholders. | [Foundation commit `c92e287`](https://github.com/Jaycenn/Hoop-Routine/commit/c92e287) |
+| **2 — review saved training** | Added a working Workout Summary, History with completed and unfinished sessions, Progress totals and accuracy trends, reusable interface components, and mobile layouts. | [Feature commit `02796f5`](https://github.com/Jaycenn/Hoop-Routine/commit/02796f5), [documentation `4bce507`](https://github.com/Jaycenn/Hoop-Routine/commit/4bce507) |
+| **3 — reliability and release** | Improved custom workouts, drill guidance, transactions, validation, migration safety, tests, and documentation. Applied Migration 001 after an isolated rehearsal and deployed the client and API to Vercel with Neon. | [Week 3 source `46e8495`](https://github.com/Jaycenn/Hoop-Routine/commit/46e8495) |
 
-### What broke or what remains unverified
+These commits show when work entered Git; the commit author alone does not prove which individual lines I wrote without AI.
 
-- The earlier seed would have replaced preset drill assignments and could have overwritten custom-workout metadata. The corrected seed passed isolated tests, but it has **not** been applied to live Neon; the new drill wording is therefore still only in the local seed file.
-- The local safety run passed 45 test cases, with no failures. Node also counted the wrapper for an excluded external PostgreSQL test file. Server syntax checks and a React production build passed. The isolated restore and migration tested real PostgreSQL, while the default suite also used disposable PGlite and fake connections.
-- The live migration status and counts were checked from the student's terminal and Neon SQL Editor. A complete post-migration login-to-progress walkthrough on the live-backed app has not yet been confirmed in this report. The server was reported to start successfully; an earlier login screenshot showed a client-to-server connection error.
-- Screenshots, the five-slide deck, and the 1254 × 1254 draft project image predate the latest changes. The deck still needs explicit technology and challenges content; the final image needs the student's name and the required 1080 × 1080 size. Physical-device and accessibility checks are also open.
-- Student-written code and a 20% authorship share cannot be established from the available notes or Git history alone. The student must identify their own functions and explain them. Week 3 commit links remain pending.
+## Week 3 increment: October 5–9, 2026
 
-### What is left
+### What changed and why
 
-1. With the backend running, confirm login, custom-workout saving, drill-result saving, completion, History, and Progress against the migrated Neon database. Do not rerun the migration, schema initializer, or reset.
-2. Review the revised exercise wording. Run the seed only if the new guides are needed now and only after a separate decision; it is not required for the migrated schema to work. Then refresh screenshots with nonpersonal demo data.
-3. Review all security-checklist evidence and identify the code the student personally wrote for `AI-USAGE.md`. Add only real commit links after the student makes those commits.
-4. Update the slides, record the required 3–5 minute video with face/voice and a 2–3 minute AI segment, and make the named 1080 × 1080 image for the private presentation submission.
-5. Verify the public repository and Drive links, then submit the final project, presentation, and AI badge links in Canvas by October 9, 2026 at 23:59 (UTC+8). Deployment is optional. No commit, push, or deployment was performed as part of this documentation edit.
+- **Workout flow:** Players can choose from 16 preset workouts or build a private custom routine from the 46-drill library. Custom edits preserve earlier session history. Draft recovery and clearer controls reduce lost input while recording.
+- **Results and review:** Saving, finishing, and cancelling a session now use transactions and owned-session locks. A final drill and workout completion can save together; repeated completion keeps the original finish time. History pagination and corrected accuracy totals make older and incomplete data easier to read.
+- **Guidance and layout:** The local catalog has clearer drill instructions, equipment, and targets. Tablet/mobile layouts, loading states, and progress labels were refined. The revised seed has **not** been run on live Neon, so existing live drill descriptions may still use the earlier wording.
+- **Database and security:** Migration 001 adds session drill snapshots, stronger result constraints, revocable login sessions, and rules for active sessions. Server validation, TLS checks, authentication rate limits, and safe error responses were tightened. The React, Express, and PostgreSQL architecture stayed in place.
+- **Deployment:** One Vercel Hobby project now serves the React site and existing Express API on the same HTTPS origin. Neon remains the database. The live [health endpoint](https://hooproutine.vercel.app/api/health) returned `{"status":"ok"}` after querying PostgreSQL.
 
----
+### Problems I ran into and how they were handled
 
-# Archived Week 2 report
+| Problem | Resolution or current status |
+| --- | --- |
+| An earlier seed could replace preset drill assignments or overwrite custom-workout metadata. | The seed was changed to preserve existing ownership, metadata, and assignments. Isolated tests passed; it was **not** run on live Neon. |
+| Repeated or simultaneous workout requests could conflict or duplicate work. | Transactions, row locks, retry IDs, and idempotent completion made saves and finishes predictable. |
+| Results with makes but no recorded attempts could make accuracy misleading. | Summary and Progress exclude those legacy makes from accuracy calculations while preserving the saved results. |
+| A local login screen previously could not reach the API. | The local services were started with matching settings; production uses same-origin `/api` requests and secure cookies. The deployed API login flow passed. |
+| The initial Vercel GitHub connection did not complete. | The CLI deployment works, but a later GitHub push alone will not redeploy the app. |
 
-The following describes the earlier increment; its then-open tasks and behavior are not a statement of the current implementation.
+### Database protection and verification
 
-## Week of: September 24–27, 2026
+A private Neon backup was restored into an isolated PostgreSQL database before live changes. Migration 001 passed there; the recorded comparison found the original table fingerprints unchanged and added eight historical drill snapshots. I then applied **only Migration 001** to live Neon. My terminal reported it as `applied`, and a subsequent Neon count check matched the expected pre-deployment account, workout, drill, assignment, session, result, and snapshot totals. No live schema reset or seed ran.
 
-## What changed this week
+On October 9, the local checks passed **45 tests**, server syntax checks, and the React production build. The separate external PostgreSQL integration test was skipped by default. The public site and login page returned HTTP 200, the database-backed health endpoint returned HTTP 200, and signed-out protected routes returned HTTP 401.
 
-- Replaced the Week 1 Workout Summary placeholder with a working summary screen that loads the completed session from the API.
-- Added session totals for completed drills, training time, shots made, shooting attempts, shooting accuracy, and repetitions.
-- Changed the end of the Active Workout flow so finishing the last drill opens the saved Workout Summary instead of returning directly to Today.
-- Replaced the Workout History placeholder with a working history screen.
-- Added `GET /api/sessions` to return up to 30 recent sessions belonging only to the authenticated player.
-- Made completed history entries open their summaries and unfinished entries reopen the active workout.
-- Added a confirmed Cancel Workout action that deletes only the authenticated player's unfinished session and its draft drill results.
-- Replaced the Progress placeholder with a working progress dashboard.
-- Added `GET /api/progress` to calculate total workouts, training minutes, completed drills, overall shooting accuracy, recent accuracy results, and results grouped by drill category.
-- Added reusable `StatCard`, `HistoryListItem`, `AccuracyChart`, and `EmptyState` components.
-- Added clear empty states for players who have not completed a workout or do not yet have shooting-attempt data.
-- Added responsive styles for Summary, History, and Progress so the layouts stack on mobile without horizontal page scrolling.
-- Removed the unused placeholder page from the Week 1 increment.
-- Expanded the server syntax check to include the new progress route.
-- Ran the server unit tests and syntax checks successfully and created a successful React production build.
+With approval, I created one clearly named **HoopRoutine Deployment Test** account. Through the public API, registration, login, preset listing, drill listing, custom create/edit/reopen, result saving, completion, Summary data, History, Progress, logout, and login again passed. The test left one account and two completed sessions in Neon; it did not intentionally change earlier users or sessions. These were API checks, not a full browser click-through of every screen.
 
-## Why
+## What remains
 
-Week 1 established authentication, Today's Workout, the Active Workout form, and database saving. The purpose of the Week 2 increment was to make the saved results useful after a workout. Players can now review one completed session, return to older sessions, resume an unfinished session, and see accumulated training statistics.
+- The seven [application screenshots](docs/screenshots/README.md) were captured on October 5 with illustrative demo data. They are real HoopRoutine screens, but they predate the latest code and should be compared with the current interface before final use. Physical phone/tablet, keyboard, and screen-reader checks remain.
+- Live Neon still has the earlier drill wording because the revised seed was not run. Seeding is separate from Migration 001 and needs its own review.
+- Email ownership is not verified by a confirmation link or code. A password-recovery flow is not implemented.
+- The October 9 client audit reported a high-severity `source-map-js@1.2.1` advisory through the Vite/PostCSS build chain. It needs a reviewed dependency update and retest. The Vercel Git connection also remains unlinked.
+- The presentation deck, demo video, and named 1080 × 1080 project image need final human review. Specific student-written functions and the course's manual-code threshold still need evidence in [AI-USAGE.md](AI-USAGE.md).
 
-The new API queries keep every result connected to the authenticated user. The summary helps immediately after a workout, History makes earlier sessions accessible, and Progress turns several sessions into understandable totals and trends. Reusable cards, list items, charts, and empty states keep these screens consistent with the approved HoopRoutine design system.
-
-## What broke or what I got stuck on
-
-- Progress cannot treat “no shooting attempts recorded” as the same thing as `0%` accuracy. I had to keep accuracy as `null` when there are no attempts and display a dash or explanation instead of a misleading percentage.
-- Workout History contains both completed and unfinished sessions. The screen needed separate behavior so a completed entry opens its summary while an unfinished entry returns to the active workout.
-- Progress data required several related totals from PostgreSQL. The queries had to limit results to the authenticated player's completed sessions and group category totals without mixing data from other users.
-- A useful accuracy trend needs more than one completed workout. The interface works with limited data, but the chart still needs realistic multi-session testing against the Neon database.
-- The automated checks cover validation and confirm that the code parses and builds, but route-level database integration tests are still missing.
-
-## What is left
-
-- Test the complete Week 2 flow with several workouts stored in Neon, including unfinished sessions and sessions without shooting attempts.
-- Add integration tests for authentication, session ownership, history queries, progress queries, and error responses.
-- Improve loading, network-error, and validation messages.
-- Perform a keyboard, focus, contrast, and screen-reader review.
-- Test phone, tablet, and desktop layouts on physical devices and confirm there is no horizontal scrolling.
-- Capture updated screenshots of Workout Summary, Workout History, and Progress for the Week 2 documentation update.
-- Complete the required Week 2 security checklist in the private class workspace.
-- Update `AI-USAGE.md` with the real commit links after the Week 2 changes are committed.
-- Configure production environment variables, deploy the client and API, and test secure cookies and CORS on the live domains.
-- Complete final visual polish, deployment documentation, presentation materials, and the demonstration video during Week 3.
+The report and README describe completed work and open limitations. They do not claim a manual authorship percentage or that the remaining presentation materials were submitted.
