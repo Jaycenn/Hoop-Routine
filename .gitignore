@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.vercel/
 .env
 .env.local
 .env.*
@@ -10,4 +11,3 @@ docs/submission/private/
 *.log
 .DS_Store
 coverage/
-

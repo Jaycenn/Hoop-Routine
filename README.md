@@ -190,8 +190,8 @@ On October 9, **45 tests passed**, server syntax checks and the client build pas
 - Revised drill wording in `server/db/seed.sql` has not been applied to existing Neon drill rows; seeding requires a separate review.
 - The screenshots predate the October 9 updates. Physical-device, keyboard, and screen-reader checks remain.
 - The Vercel Git connection is not set up. The October 9 client audit reported a high-severity advisory in `source-map-js@1.2.1` through the Vite/PostCSS build chain; it needs a reviewed dependency update and retest.
-- Specific student-written functions and a manual-code percentage remain unverified in the AI badge evidence.
+- The AI usage log identifies original Week 1 code and explains one AI-written module. The exact manually written share of the final codebase has not been measured.
 
 ## AI assistance
 
-I developed HoopRoutine's original concept and much of its initial code foundation, including the basketball training direction. **OpenAI Codex** helped expand and revise the React, Express, and PostgreSQL implementation, debug problems, add tests, and improve documentation. Codex also directly implemented some later features. [AI-USAGE.md](AI-USAGE.md) records the assistance and open authorship evidence; the badge above documents AI use and does not claim the course badge was awarded.
+I designed HoopRoutine and wrote its Week 1 React, Express, and PostgreSQL foundation from scratch, including accounts and the initial workout flow. In Week 1, **OpenAI Codex** helped me debug my code; it did not build those features. I used Codex substantially in Weeks 2 and 3 to expand, implement, debug, test, and document later work. [AI-USAGE.md](AI-USAGE.md) gives dated examples, commit links, corrections, and specific original and AI-written code. The badge above discloses AI assistance; it does not claim that the course badge has been awarded.

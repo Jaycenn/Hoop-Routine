@@ -6,17 +6,17 @@
 
 **Live app:** [hooproutine.vercel.app](https://hooproutine.vercel.app/)
 
-HoopRoutine is my basketball training app for planning workouts, recording drill results, and reviewing progress. I developed the original idea, basketball routines, user flow, and much of the initial code foundation. I directed the later work and tested the results. OpenAI Codex substantially helped expand, revise, debug, and test the implementation, and directly wrote some later code. [AI-USAGE.md](AI-USAGE.md) explains that assistance; the exact student-written code share is still unverified.
+HoopRoutine is my basketball training app for planning workouts, recording drill results, and reviewing progress. I designed the project and wrote its Week 1 React, Express, and PostgreSQL implementation from scratch. I used OpenAI Codex only to debug my Week 1 code. In Weeks 2 and 3, I directed and tested the work while Codex helped expand, implement, revise, debug, and test substantial parts of the app. [AI-USAGE.md](AI-USAGE.md) explains the contributions and commit evidence; the exact manually written share of the final codebase is still unverified.
 
 ## Progress across the three weeks
 
 | Week | Main increment | Evidence |
 | --- | --- | --- |
-| **1 — foundation** | Built the initial React client, Express API, PostgreSQL schema, account flow, Today's Workout, and active workout recording. Summary, History, and Progress were still placeholders. | [Foundation commit `c92e287`](https://github.com/Jaycenn/Hoop-Routine/commit/c92e287) |
+| **1 — foundation** | I wrote the initial React client, Express API, PostgreSQL schema, account flow, Today's Workout, and active workout recording. Codex helped only with debugging. Summary, History, and Progress were still placeholders. | [Foundation commit `c92e287`](https://github.com/Jaycenn/Hoop-Routine/commit/c92e287) |
 | **2 — review saved training** | Added a working Workout Summary, History with completed and unfinished sessions, Progress totals and accuracy trends, reusable interface components, and mobile layouts. | [Feature commit `02796f5`](https://github.com/Jaycenn/Hoop-Routine/commit/02796f5), [documentation `4bce507`](https://github.com/Jaycenn/Hoop-Routine/commit/4bce507) |
 | **3 — reliability and release** | Improved custom workouts, drill guidance, transactions, validation, migration safety, tests, and documentation. Applied Migration 001 after an isolated rehearsal and deployed the client and API to Vercel with Neon. | [Week 3 source `46e8495`](https://github.com/Jaycenn/Hoop-Routine/commit/46e8495) |
 
-These commits show when work entered Git; the commit author alone does not prove which individual lines I wrote without AI.
+These commits show when work entered Git. My account of writing the Week 1 code comes from my own work; a commit author alone does not prove who typed each line or what fraction of the final version remains unchanged.
 
 ## Week 3 increment: October 5–9, 2026
 
@@ -52,6 +52,6 @@ With approval, I created one clearly named **HoopRoutine Deployment Test** accou
 - Live Neon still has the earlier drill wording because the revised seed was not run. Seeding is separate from Migration 001 and needs its own review.
 - Email ownership is not verified by a confirmation link or code. A password-recovery flow is not implemented.
 - The October 9 client audit reported a high-severity `source-map-js@1.2.1` advisory through the Vite/PostCSS build chain. It needs a reviewed dependency update and retest. The Vercel Git connection also remains unlinked.
-- The presentation deck, demo video, and named 1080 × 1080 project image need final human review. Specific student-written functions and the course's manual-code threshold still need evidence in [AI-USAGE.md](AI-USAGE.md).
+- The presentation deck, demo video, and named 1080 × 1080 project image need final human review. [AI-USAGE.md](AI-USAGE.md) now names and explains specific code I wrote in Week 1, but the course's manually written share of the final codebase has not been measured.
 
 The report and README describe completed work and open limitations. They do not claim a manual authorship percentage or that the remaining presentation materials were submitted.

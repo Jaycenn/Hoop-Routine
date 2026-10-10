@@ -1,0 +1,15 @@
+.git/
+.vercel/
+node_modules/
+**/node_modules/
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+*.dump
+*.backup
+docs/
+client/test/
+server/test/
